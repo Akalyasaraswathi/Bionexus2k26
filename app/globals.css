@@ -1,0 +1,201 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-void: #070819;
+  --bg-deep: #0d1030;
+  --bg-panel: #12153a;
+  --violet: #7c5cff;
+  --violet-dim: #4a3aa8;
+  --cyan: #2be8cf;
+  --coat-white: #eef0ff;
+  --text-main: #e9e7fb;
+  --text-dim: #9a94c4;
+  --line: rgba(154, 148, 196, 0.16);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg-void);
+  color: var(--text-main);
+  font-family: var(--font-sans), sans-serif;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--violet);
+  color: #fff;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-void);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--violet-dim);
+  border-radius: 4px;
+}
+
+.font-serif-display {
+  font-family: var(--font-serif), serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* visible keyboard focus everywhere */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+
+/* =========================================================
+   BIONEXUS PAGE-TO-PAGE SWIPE / SHUTTER TRANSITIONS
+   ========================================================= */
+
+.page-transition {
+  position: relative;
+  scroll-margin-top: 92px;
+  opacity: 0;
+  will-change: transform, opacity, clip-path;
+  transition:
+    opacity 760ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 900ms cubic-bezier(0.22, 1, 0.36, 1),
+    clip-path 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Left swipe: the next page enters from the right and settles into place. */
+.page-transition-left {
+  transform: translate3d(70px, 0, 0);
+  clip-path: inset(0 0 0 9%);
+}
+
+/* Right swipe: the next page enters from the left. */
+.page-transition-right {
+  transform: translate3d(-70px, 0, 0);
+  clip-path: inset(0 9% 0 0);
+}
+
+/* Up swipe: the next page rises into view. */
+.page-transition-up {
+  transform: translate3d(0, 80px, 0);
+  clip-path: inset(10% 0 0 0);
+}
+
+/* Shutter: page opens from the center like two sliding panels. */
+.page-transition-shutter {
+  transform: scale(0.985);
+  clip-path: inset(0 46% 0 46% round 18px);
+}
+
+.page-transition-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  clip-path: inset(0 0 0 0 round 0);
+}
+
+/* A subtle travelling light makes the page change feel intentional rather
+   than like a normal fade. It only appears while a page is entering. */
+.page-transition::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(43, 232, 207, 0.00) 35%,
+      rgba(124, 92, 255, 0.22) 50%,
+      rgba(43, 232, 207, 0.00) 65%,
+      transparent 100%
+    );
+  transform: translateX(-100%);
+}
+
+.page-transition-visible::after {
+  animation: page-transition-light 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes page-transition-light {
+  0% {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  18% {
+    opacity: 0.75;
+  }
+  70% {
+    opacity: 0.35;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+/* Sections inside the Events page get their own transitions too. */
+#events-page .page-transition {
+  scroll-margin-top: 92px;
+}
+
+/* Keep the transition clean on narrow screens. */
+@media (max-width: 700px) {
+  .page-transition-left {
+    transform: translate3d(42px, 0, 0);
+    clip-path: inset(0 0 0 7%);
+  }
+
+  .page-transition-right {
+    transform: translate3d(-42px, 0, 0);
+    clip-path: inset(0 7% 0 0);
+  }
+
+  .page-transition-up {
+    transform: translate3d(0, 55px, 0);
+    clip-path: inset(7% 0 0 0);
+  }
+
+  .page-transition-shutter {
+    transform: scale(0.99);
+    clip-path: inset(0 40% 0 40% round 12px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-transition,
+  .page-transition-left,
+  .page-transition-right,
+  .page-transition-up,
+  .page-transition-shutter {
+    opacity: 1;
+    transform: none;
+    clip-path: none;
+    transition: none;
+  }
+
+  .page-transition::after {
+    display: none;
+  }
+}
